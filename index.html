@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Афиша мероприятий</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Шапка */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      height: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .hero h1 {
+      position: relative;
+      color: #ff00ff;
+      font-size: 32px;
+      text-shadow: 0 0 10px #ff00ff;
+      z-index: 1;
+    }
+
+    /* Фильтры */
+    .filters {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      background: #1a1a1a;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      background: #333;
+      color: #fff;
+    }
+
+    /* Карточки */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(255,0,255,0.2);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #ff00ff;
+    }
+
+    .card-date {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #aaa;
+    }
+
+    .card button {
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #ff00ff;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background: #ff33ff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Шапка -->
+  <div class="hero">
+    <h1>Афиша мероприятий</h1>
+  </div>
+
+  <!-- Фильтры -->
+  <div class="filters">
+    <select>
+      <option>Berlin</option>
+      <option>Hamburg</option>
+      <option>München</option>
+    </select>
+    <select>
+      <option>Все тематики</option>
+      <option>Клуб</option>
+      <option>Бар</option>
+      <option>Open Air</option>
+      <option>Концерт</option>
+    </select>
+  </div>
+
+  <!-- Карточки -->
+  <div class="cards">
+    <div class="card">
+      <img src="https://picsum.photos/400/200?random=1" alt="Event">
+      <div class="card-content">
+        <div class="card-title">Neon Party</div>
+        <div class="card-date">29 сентября • Berlin</div>
+        <button>Подробнее</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://picsum.photos/400/200?random=2" alt="Event">
+      <div class="card-content">
+        <div class="card-title">Open Air Festival</div>
+        <div class="card-date">1 октября • Hamburg</div>
+        <button>Подробнее</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://picsum.photos/400/200?random=3" alt="Event">
+      <div class="card-content">
+        <div class="card-title">Rock Night</div>
+        <div class="card-date">3 октября • München</div>
+        <button>Подробнее</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+

@@ -23,7 +23,6 @@
       text-align: center;
       position: relative;
     }
-
     .hero::after {
       content: "";
       position: absolute;
@@ -31,7 +30,6 @@
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.6);
     }
-
     .hero h1 {
       position: relative;
       color: #ff00ff;
@@ -47,7 +45,6 @@
       padding: 15px;
       background: #1a1a1a;
     }
-
     select {
       padding: 10px;
       border-radius: 8px;
@@ -64,7 +61,6 @@
       gap: 20px;
       padding: 20px;
     }
-
     .card {
       background: #1e1e1e;
       border-radius: 12px;
@@ -72,33 +68,23 @@
       box-shadow: 0 4px 10px rgba(255,0,255,0.2);
       transition: transform 0.2s ease;
     }
-
-    .card:hover {
-      transform: scale(1.03);
-    }
-
+    .card:hover { transform: scale(1.03); }
     .card img {
       width: 100%;
       height: 180px;
       object-fit: cover;
     }
-
-    .card-content {
-      padding: 15px;
-    }
-
+    .card-content { padding: 15px; }
     .card-title {
       font-size: 18px;
       margin-bottom: 8px;
       color: #ff00ff;
     }
-
     .card-date {
       font-size: 14px;
       margin-bottom: 12px;
       color: #aaa;
     }
-
     .card button {
       padding: 10px;
       width: 100%;
@@ -109,9 +95,68 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .card button:hover { background: #ff33ff; }
 
-    .card button:hover {
-      background: #ff33ff;
+    /* Модалка */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.8);
+      z-index: 999;
+    }
+    .modal-content {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .modal-title {
+      font-size: 22px;
+      margin-bottom: 8px;
+      color: #ff00ff;
+    }
+    .modal-date {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #aaa;
+    }
+    .modal-desc {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    .modal button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #ff00ff;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .modal button:hover { background: #ff33ff; }
+    .close {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
@@ -123,51 +168,140 @@
 
   <!-- Фильтры -->
   <div class="filters">
-    <select>
-      <option>Berlin</option>
-      <option>Hamburg</option>
-      <option>München</option>
+    <select id="cityFilter">
+      <option value="">Все города</option>
     </select>
-    <select>
-      <option>Все тематики</option>
-      <option>Клуб</option>
-      <option>Бар</option>
-      <option>Open Air</option>
-      <option>Концерт</option>
+    <select id="typeFilter">
+      <option value="">Все тематики</option>
     </select>
   </div>
 
   <!-- Карточки -->
-  <div class="cards">
-    <div class="card">
-      <img src="https://picsum.photos/400/200?random=1" alt="Event">
-      <div class="card-content">
-        <div class="card-title">Neon Party</div>
-        <div class="card-date">29 сентября • Berlin</div>
-        <button>Подробнее</button>
-      </div>
-    </div>
+  <div class="cards"></div>
 
-    <div class="card">
-      <img src="https://picsum.photos/400/200?random=2" alt="Event">
-      <div class="card-content">
-        <div class="card-title">Open Air Festival</div>
-        <div class="card-date">1 октября • Hamburg</div>
-        <button>Подробнее</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="https://picsum.photos/400/200?random=3" alt="Event">
-      <div class="card-content">
-        <div class="card-title">Rock Night</div>
-        <div class="card-date">3 октября • München</div>
-        <button>Подробнее</button>
-      </div>
+  <!-- Модалка -->
+  <div class="modal" id="eventModal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <img id="modalImg" src="" alt="Event">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-date" id="modalDate"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <button id="buyBtn">Заказать</button>
     </div>
   </div>
+
+  <script>
+    const allEvents = [
+      {
+        title: "Neon Party",
+        date: "29 сентября",
+        city: "Berlin",
+        type: "Клуб",
+        img: "https://picsum.photos/400/200?random=1",
+        desc: "Яркая неоновая вечеринка с лучшими DJ и световым шоу. Ждём всех любителей танцев и драйва!"
+      },
+      {
+        title: "Open Air Festival",
+        date: "1 октября",
+        city: "Hamburg",
+        type: "Open Air",
+        img: "https://picsum.photos/400/200?random=2",
+        desc: "Грандиозный фестиваль под открытым небом! Живая музыка, уличная еда и море позитива."
+      },
+      {
+        title: "Rock Night",
+        date: "3 октября",
+        city: "München",
+        type: "Концерт",
+        img: "https://picsum.photos/400/200?random=3",
+        desc: "Ночь рока в Мюнхене! Самые мощные хиты, живая атмосфера и драйв до утра."
+      }
+    ];
+
+    const cardsContainer = document.querySelector('.cards');
+    const cityFilter = document.getElementById('cityFilter');
+    const typeFilter = document.getElementById('typeFilter');
+
+    function renderCards(events) {
+      cardsContainer.innerHTML = "";
+      events.forEach(ev => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${ev.img}" alt="${ev.title}">
+          <div class="card-content">
+            <div class="card-title">${ev.title}</div>
+            <div class="card-date">${ev.date} • ${ev.city}</div>
+            <button class="detailsBtn">Подробнее</button>
+          </div>
+        `;
+        card.querySelector('.detailsBtn').addEventListener('click', () => openModal(ev));
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function initFilters(events) {
+      const cities = [...new Set(events.map(ev => ev.city))];
+      const types = [...new Set(events.map(ev => ev.type))];
+
+      cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city;
+        opt.textContent = city;
+        cityFilter.appendChild(opt);
+      });
+
+      types.forEach(type => {
+        const opt = document.createElement('option');
+        opt.value = type;
+        opt.textContent = type;
+        typeFilter.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      const cityVal = cityFilter.value;
+      const typeVal = typeFilter.value;
+      const filtered = allEvents.filter(ev => {
+        return (!cityVal || ev.city === cityVal) &&
+               (!typeVal || ev.type === typeVal);
+      });
+      renderCards(filtered);
+    }
+
+    cityFilter.addEventListener('change', applyFilters);
+    typeFilter.addEventListener('change', applyFilters);
+
+    const modal = document.getElementById('eventModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDate = document.getElementById('modalDate');
+    const modalDesc = document.getElementById('modalDesc');
+    const buyBtn = document.getElementById('buyBtn');
+
+    function openModal(event) {
+      modalImg.src = event.img;
+      modalTitle.textContent = event.title;
+      modalDate.textContent = event.date + " • " + event.city;
+      modalDesc.textContent = event.desc;
+      buyBtn.onclick = () => {
+        window.open("https://t.me/healerSveta1212", "_blank"); // 👈 замени на свой username
+      };
+      modal.style.display = "flex";
+    }
+
+    modal.querySelector('.close').onclick = () => modal.style.display = "none";
+    window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+    // Запуск
+    renderCards(allEvents);
+    initFilters(allEvents);
+  </script>
 </body>
 </html>
+
+
 
 
 

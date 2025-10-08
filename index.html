@@ -177,7 +177,6 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <img id="modalImg" src="" alt="Event">
-      <img id="modalImg2" src="" alt="Event extra" style="display:none;">
       <div class="modal-text" id="modalText"></div>
       <button class="contact-btn" id="contactBtn">Написать</button>
     </div>
@@ -186,7 +185,7 @@
   <script>
     const allEvents = [
       {
-        title: "NOVEMBERFEST — праздник ярких красок, моды и музыки!",
+         title: "NOVEMBERFEST — праздник ярких красок, моды и музыки!",
         date: "🎤 15 ноября, город Фрэхен 🪩",
         bg: "fon.jpg", // фоновое изображение карточки
         img: "afisha.jpg", // основное изображение в модалке
@@ -214,7 +213,7 @@
 Фото зоны для всех!🥳
 
 🥂 Бонус: при покупке онлайн-билета — напиток в подарок!
-🎟️ Подробности и регистрация — пишите в директ.
+🎟 Подробности и регистрация — пишите в директ.
 
 ✨ NovemberFest — это день, когда искусство, стиль и музыка становятся одним целым.
 Приходите всей семьёй, с друзьями или в одиночку — здесь каждый найдёт вдохновение, новых знакомых и настроение, которое останется с вами надолго!`
@@ -224,7 +223,6 @@
     const cardsContainer = document.querySelector('.cards');
     const modal = document.getElementById('eventModal');
     const modalImg = document.getElementById('modalImg');
-    const modalImg2 = document.getElementById('modalImg2');
     const modalText = document.getElementById('modalText');
     const contactBtn = document.getElementById('contactBtn');
 
@@ -248,13 +246,6 @@
 
     function openModal(event) {
       modalImg.src = event.img;
-      if (event.bg && event.bg !== event.img) {
-        modalImg2.src = event.bg;
-        modalImg2.style.display = "block";
-      } else {
-        modalImg2.style.display = "none";
-      }
-
       modalText.textContent = `${event.date}\n\n${event.desc}`;
       contactBtn.onclick = () => window.open("https://t.me/healerSveta1212", "_blank");
       modal.style.display = "flex";
@@ -273,6 +264,7 @@
   </script>
 </body>
 </html>
+
 
 
 

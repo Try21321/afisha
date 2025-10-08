@@ -6,16 +6,15 @@
   <title>Афиша мероприятий</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
       background-color: #111;
       color: #fff;
       margin: 0;
       padding: 0;
     }
 
-    /* Шапка */
     .hero {
-      background: url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      background: url('images/header.jpg') center/cover no-repeat;
       height: 250px;
       display: flex;
       justify-content: center;
@@ -38,29 +37,13 @@
       z-index: 1;
     }
 
-    /* Фильтры */
-    .filters {
-      display: flex;
-      justify-content: space-around;
-      padding: 15px;
-      background: #1a1a1a;
-    }
-    select {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-      background: #333;
-      color: #fff;
-    }
-
-    /* Карточки */
     .cards {
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
       padding: 20px;
     }
+
     .card {
       background: #1e1e1e;
       border-radius: 12px;
@@ -97,7 +80,7 @@
     }
     .card button:hover { background: #ff33ff; }
 
-    /* Модалка */
+    /* --- Модальное окно в стиле Telegram --- */
     .modal {
       position: fixed;
       top: 0; left: 0;
@@ -107,121 +90,135 @@
       align-items: center;
       background: rgba(0,0,0,0.8);
       z-index: 999;
+      padding: 20px;
+      box-sizing: border-box;
     }
     .modal-content {
       background: #1e1e1e;
       border-radius: 12px;
-      padding: 20px;
       max-width: 500px;
-      width: 90%;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 20px rgba(255,0,255,0.3);
       position: relative;
       animation: fadeIn 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
     .modal-content img {
       width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
+      height: auto;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
-    .modal-title {
-      font-size: 22px;
-      margin-bottom: 8px;
-      color: #ff00ff;
-    }
-    .modal-date {
-      font-size: 14px;
-      margin-bottom: 12px;
-      color: #aaa;
-    }
-    .modal-desc {
+    .modal-text {
+      padding: 20px;
+      white-space: pre-line;
+      line-height: 1.6;
       font-size: 15px;
-      margin-bottom: 20px;
     }
-    .modal button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
+    .modal-text b, .modal-text strong { color: #ff00ff; }
+    .modal .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Кнопка "Написать" */
+    .contact-btn {
+      margin: 0 20px 20px 20px;
       background: #ff00ff;
       color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
       font-size: 16px;
       cursor: pointer;
+      text-align: center;
+      transition: background 0.3s ease;
     }
-    .modal button:hover { background: #ff33ff; }
-    .close {
-      position: absolute;
-      top: 10px; right: 15px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #fff;
+    .contact-btn:hover {
+      background: #ff33ff;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    /* Мобильная адаптация */
+    @media (max-width: 480px) {
+      .modal-content {
+        max-height: 95vh;
+      }
+      .modal-text {
+        font-size: 14px;
+      }
+      .contact-btn {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Шапка -->
   <div class="hero">
     <h1>Афиша мероприятий</h1>
   </div>
 
-  <!-- Фильтры -->
-  <div class="filters">
-    <select id="cityFilter">
-      <option value="">Все города</option>
-    </select>
-    <select id="typeFilter">
-      <option value="">Все тематики</option>
-    </select>
-  </div>
-
-  <!-- Карточки -->
   <div class="cards"></div>
 
-  <!-- Модалка -->
   <div class="modal" id="eventModal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <img id="modalImg" src="" alt="Event">
-      <div class="modal-title" id="modalTitle"></div>
-      <div class="modal-date" id="modalDate"></div>
-      <div class="modal-desc" id="modalDesc"></div>
-      <button id="buyBtn">Заказать</button>
+      <div class="modal-text" id="modalText"></div>
+      <button class="contact-btn" id="contactBtn">Написать</button>
     </div>
   </div>
 
   <script>
     const allEvents = [
       {
-        title: "Neon Party",
-        date: "29 сентября",
-        city: "Berlin",
-        type: "Клуб",
-        img: "https://picsum.photos/400/200?random=1",
-        desc: "Яркая неоновая вечеринка с лучшими DJ и световым шоу. Ждём всех любителей танцев и драйва!"
-      },
-      {
-        title: "Open Air Festival",
-        date: "1 октября",
-        city: "Hamburg",
-        type: "Open Air",
-        img: "https://picsum.photos/400/200?random=2",
-        desc: "Грандиозный фестиваль под открытым небом! Живая музыка, уличная еда и море позитива."
-      },
-      {
-        title: "Rock Night",
-        date: "3 октября",
-        city: "München",
-        type: "Концерт",
-        img: "https://picsum.photos/400/200?random=3",
-        desc: "Ночь рока в Мюнхене! Самые мощные хиты, живая атмосфера и драйв до утра."
+        title: "KARAOKE DISCO PARTY",
+        date: "🎤 18.10 | СУББОТА | NARA RESTAURANT 🪩 KARAOKE HAMBURG 🤩",
+        img: "afisha.jpg", // локальное изображение
+        desc: `В этот вечер мы встречаемся в новом стильном месте на Reeperbahn —
+где эстетика, вкус и атмосфера создают настоящий ночной кайф. 🌃
+
+Мы нашли для наших любимых гостей настоящий бриллиант на Reeperbahn 💎 —
+изысканное пространство NARA RESTAURANT,
+всего в нескольких шагах от легендарной Beatles-Platz. 
+Лаконичный дизайн, теплая подсветка и кухня,
+где Sushi & Japanese Fusion превращаются в гастрономическое искусство. 🍣✨
+
+💫 Музыка, улыбки, бокалы и песни, что звучат от сердца —
+здесь всё на своём месте.
+Это вечер, где все свои, где можно быть собой
+и танцевать до утра без суеты, с душой и драйвом. 💃🕺
+
+📍 NARA RESTAURANT  
+Nobistor 8, Hamburg (налево от Beatles-Platz)
+
+📲 Reserve & Info: +49 151 726 25153
+
+👗 DRESS CODE: вечерний, элегантный, стильный  
+🕊️ FACE CONTROL: уют, уважение и атмосфера своих
+
+✨ KARAOKE DISCO PARTY открывает новый уровень —
+стиль, вкус и душевная энергия, ради которых стоит быть именно здесь. ❤️`
       }
     ];
 
     const cardsContainer = document.querySelector('.cards');
-    const cityFilter = document.getElementById('cityFilter');
-    const typeFilter = document.getElementById('typeFilter');
+    const modal = document.getElementById('eventModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalText = document.getElementById('modalText');
+    const contactBtn = document.getElementById('contactBtn');
 
     function renderCards(events) {
       cardsContainer.innerHTML = "";
@@ -232,74 +229,36 @@
           <img src="${ev.img}" alt="${ev.title}">
           <div class="card-content">
             <div class="card-title">${ev.title}</div>
-            <div class="card-date">${ev.date} • ${ev.city}</div>
-            <button class="detailsBtn">Подробнее</button>
+            <div class="card-date">${ev.date}</div>
+            <button>Подробнее</button>
           </div>
         `;
-        card.querySelector('.detailsBtn').addEventListener('click', () => openModal(ev));
+        card.querySelector('button').addEventListener('click', () => openModal(ev));
         cardsContainer.appendChild(card);
       });
     }
 
-    function initFilters(events) {
-      const cities = [...new Set(events.map(ev => ev.city))];
-      const types = [...new Set(events.map(ev => ev.type))];
-
-      cities.forEach(city => {
-        const opt = document.createElement('option');
-        opt.value = city;
-        opt.textContent = city;
-        cityFilter.appendChild(opt);
-      });
-
-      types.forEach(type => {
-        const opt = document.createElement('option');
-        opt.value = type;
-        opt.textContent = type;
-        typeFilter.appendChild(opt);
-      });
-    }
-
-    function applyFilters() {
-      const cityVal = cityFilter.value;
-      const typeVal = typeFilter.value;
-      const filtered = allEvents.filter(ev => {
-        return (!cityVal || ev.city === cityVal) &&
-               (!typeVal || ev.type === typeVal);
-      });
-      renderCards(filtered);
-    }
-
-    cityFilter.addEventListener('change', applyFilters);
-    typeFilter.addEventListener('change', applyFilters);
-
-    const modal = document.getElementById('eventModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDate = document.getElementById('modalDate');
-    const modalDesc = document.getElementById('modalDesc');
-    const buyBtn = document.getElementById('buyBtn');
-
     function openModal(event) {
       modalImg.src = event.img;
-      modalTitle.textContent = event.title;
-      modalDate.textContent = event.date + " • " + event.city;
-      modalDesc.textContent = event.desc;
-      buyBtn.onclick = () => {
-        window.open("https://t.me/healerSveta1212", "_blank"); // 👈 замени на свой username
-      };
+      modalText.textContent = `${event.date}\n\n${event.desc}`;
+      contactBtn.onclick = () => window.open("https://t.me/healerSveta1212", "_blank"); // 👉 ссылка на Telegram
       modal.style.display = "flex";
+      document.body.style.overflow = "hidden"; // предотвращает прокрутку фона
     }
 
-    modal.querySelector('.close').onclick = () => modal.style.display = "none";
-    window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+    modal.querySelector('.close').onclick = () => closeModal();
+    window.onclick = e => { if (e.target === modal) closeModal(); };
 
-    // Запуск
+    function closeModal() {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
     renderCards(allEvents);
-    initFilters(allEvents);
   </script>
 </body>
 </html>
+
 
 
 
